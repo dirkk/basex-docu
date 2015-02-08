@@ -144,3 +144,14 @@ declare function _:to-PATH(
     file:list($p, false(), $glob) ! ($p || '/' || .)
   , file:path-separator())
 };
+
+
+declare variable $_:NAVIGATION := map {
+  "Getting Started": ("Main Page", "Getting Started", "Startup", "Command-Line Options", "Databases", "Commands", "DBA", "Database Server", "Graphical User Interface", "Parsers", "Standalone Mode", "Start Scripts", "Options"),
+  "Modules": ("Module Library", "Admin Module", "Archive Module", "Array Module", "Binary Module", "CSV Module", "Client Module", "Conversion Module", "Cryptographic Module", "Database Module", "Fetch Module", "File Module", "Full-Text Module", "HTML Module", "HTTP Module", "Hashing Module", "Higher-Order Functions Module", "Index Module", "Inspection Module", "JSON Module", "Map Module", "Math Module", "Output Module", "Process Module", "Profiling Module", "RESTXQ Module", "Random Module", "Repository Module", "Request Module", "SQL Module", "Session Module", "Sessions Module", "Streaming Module", "Unit Module", "User Module", "Validation Module", "XQuery Module", "XSLT Module", "ZIP Module", "Geo Module"),
+  "Developer": ("Clients", "Contribute", "Developing", "Developing with Eclipse", "Java Examples", "Java Bindings", "Maven", "Query Mode", "REST", "REST: POST Schema", "RESTXQ", "Server Protocol", "Server Protocol: Types", "Standard Mode", "Web Application", "Android", "Git", "Translations", "Open Issues", "Releases", "Integrating Eclipse", "Integrating oXygen", "Binary Data"),
+  "WebDAV": ("WebDAV", "WebDAV: GNOME", "WebDAV: KDE", "WebDAV: Mac OSX", "WebDAV: Windows 7", "WebDAV: Windows XP"),
+  "Internals": ("Advanced User's Guide", "Backups", "Catalog Resolver", "Configuration", "Execution Plan", "Index File Structure", "Indexes", "Logging", "Statistics", "Storage Layout", "Transaction Management", "Twitter", "User Management", "Repository", "Node Storage", "Events", "Shortcuts"),
+  "XQuery": ("XQuery", "XQuery Recipes", "XQuery Errors", "XQuery 3.0", "XQuery 3.1", "XQuery Update", "XForms", "Full-Text", "Higher-Order Functions", "Serialization"),
+  "DELETE": ("Community:Information", "Temp", "Documentation", "Security: Use Cases")
+};

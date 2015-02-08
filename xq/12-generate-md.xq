@@ -31,8 +31,8 @@ declare function local:code-signature($el as element()) as xs:string {
   let $errors := $text($el//row[entry[1]/para/emphasis = "Errors"]/entry[2]/para)
   return out:nl() || $signatures || out:nl() || out:nl() ||
     $summary || out:nl() || out:nl() ||
-    "##### Errors" || out:nl() || out:nl() || $errors || out:nl() ||
-    "##### Examples" || out:nl() || out:nl() || $examples || out:nl()
+    (if ($errors) then ("**Errors**" || out:nl() || out:nl() || $errors || out:nl()) else ()) ||
+    (if ($examples) then ("**Examples**" || out:nl() || out:nl() || $examples || out:nl()) else ())
 };
 
 declare function local:table($el as element()) as xs:string {
@@ -164,8 +164,9 @@ let $content :=
   "theme: readthedocs" || out:nl() ||
   "repo_url: https://github.com/dirkk/basex-rtd" || out:nl() ||
   "pages:" || out:nl() || string-join(
-    for $chapter in C:open($C:DOCBOOKS-PATH)/chapter
-    let $title := $chapter/title/string()
-    return '- ["' || $title || '.md", "' || $title || '"]' || out:nl()
+    for $chapter in map:keys($C:NAVIGATION)
+    for $title in map:get($C:NAVIGATION, $chapter)
+    return 
+      '- ["' || $title || '.md", "' || $chapter || '", "' || $title || '"]' || out:nl()
   )
 return file:write($output-config, $content)
