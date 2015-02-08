@@ -141,6 +141,8 @@ file:create-dir($C:EXPORT-PATH || $C:MARKDOWN-PATH || "docs/img"),
 (: Copy image dir :)
 for $f in file:list($C:EXPORT-PATH || "wikiimg")
 return file:copy($C:EXPORT-PATH || "wikiimg/" || $f, $C:EXPORT-PATH || $C:MARKDOWN-PATH || "docs/img"),
+(: Download favicon :)
+file:write-binary($C:EXPORT-PATH || $C:MARKDOWN-PATH || "docs/favicon.ico", fetch:binary("http://files.basex.org/BaseX_Icon.png")),
 
 (: Generate markdown :)
 let $output-dir := $C:EXPORT-PATH || $C:MARKDOWN-PATH || "docs/"
@@ -163,6 +165,8 @@ let $content :=
   "site_name: BaseX Documentation" || out:nl() ||
   "theme: readthedocs" || out:nl() ||
   "repo_url: https://github.com/dirkk/basex-rtd" || out:nl() ||
+  "site_favicon: favicon.ico" || out:nl() ||
+  "markdown_extensions: [admonition]" || out:nl() ||
   "pages:" || out:nl() || string-join(
     for $chapter in map:keys($C:NAVIGATION)
     for $title in map:get($C:NAVIGATION, $chapter)
