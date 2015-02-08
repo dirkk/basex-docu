@@ -98,7 +98,8 @@ declare function local:transform($element as item(), $level as xs:integer) as xs
             else "[" || $element || "](" || $element/@xlink:href || ")"
           (: internal link :)
           else "[" || $element || "](" || local:to-url($element) || ")"
-      case "title" return
+      case "title"
+      case "bridgehead" return
         let $child-content := string-join(($element/node()) ! local:transform(., $level), "")
 (:
         let $section := switch ($level) case 1 return "=" case 2 return "-" default return "-"
