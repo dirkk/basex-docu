@@ -1,9 +1,7 @@
-# BaseX Property File.
-
 # General Options
+DEBUG = false
 DBPATH = data
 REPOPATH = repo
-DEBUG = false
 LANG = English
 LANGKEYS = false
 GLOBALLOCK = false
@@ -15,6 +13,7 @@ SERVERPORT = 1984
 EVENTPORT = 1985
 USER = 
 PASSWORD = 
+AUTHMETHOD = Basic
 SERVERHOST = 
 PROXYHOST = 
 PROXYPORT = 80

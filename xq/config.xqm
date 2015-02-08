@@ -38,6 +38,9 @@ declare variable $_:BX-API := $_:WIKI-BASEURL || "/api.php?";
 (:~ Path to local exports :)
 declare variable $_:WIKI-DUMP-PATH := "wikihtml/";
 
+(:~ Path to Markdown output path:)
+declare variable $_:MARKDOWN-PATH := "markdown/";
+
 (:~ Path to images of local exports :)
 declare variable $_:WIKI-DUMP-IMG := "wikiimg/";
 declare variable $_:REL-PATH2IMG := "../" || $_:WIKI-DUMP-IMG;

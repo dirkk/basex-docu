@@ -17,4 +17,5 @@
   
   <run file="xq/export.bxs" />
   <run file="xq/11-make-pdf.xq" />
+  <run file="xq/12-generate-md.xq" />
 </commands>
