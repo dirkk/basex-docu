@@ -8,7 +8,7 @@ declare namespace docbook = "http://docbook.org/ns/docbook";
 declare default element namespace "http://docbook.org/ns/docbook";
 
 declare function local:get-lines($string as xs:string?) as xs:string* {
-  for $line in tokenize($string, "\n")
+  for $line in tokenize($string, "\n|&#160;")
   return if (string-length(normalize-space($line)) = 0) then () else $line
 };
 
@@ -25,14 +25,17 @@ declare function local:decode($string as xs:string?) as xs:string* {
 
 declare function local:code-signature($el as element()) as xs:string {
   let $text := function($el as item()*) { string-join(($el/node()) ! local:transform(., 1)) }
-  let $signatures := string-join(($el//row[entry[1]/para/emphasis = "Signatures"]/entry[2]/para/node()) ! local:transform(., 1), out:nl())
-  let $summary := $text($el//row[entry[1]/para/emphasis = "Summary"]/entry[2]/para)
+  let $block := function($el as xs:string*) { string-join($el ! ("    " || local:left-trim(.) || out:nl())) }
+  let $signatures := string-join(($el//row[entry[1]/para/emphasis = "Signatures"]/entry[2]/para/*/node()) ! local:transform(., 1), out:nl())
+  let $summary := local:left-trim($text($el//row[entry[1]/para/emphasis = "Summary"]/entry[2]/para))
   let $examples:= $text($el//row[entry[1]/para/emphasis = "Examples"]/entry[2]/para)
   let $errors := $text($el//row[entry[1]/para/emphasis = "Errors"]/entry[2]/para)
-  return out:nl() || $signatures || out:nl() || out:nl() ||
-    $summary || out:nl() || out:nl() ||
-    (if ($errors) then ("**Errors**" || out:nl() || out:nl() || $errors || out:nl()) else ()) ||
-    (if ($examples) then ("**Examples**" || out:nl() || out:nl() || $examples || out:nl()) else ())
+  return out:nl() || $signatures || out:nl() || out:nl() || string-join(
+      ":   " || local:get-lines($summary)[1] ||
+      $block(local:get-lines($summary)[position() > 1])
+    ) || out:nl() || out:nl() ||
+    (if ($errors) then ($block("**Errors**") || out:nl() || out:nl() || $block(local:get-lines($errors)) || out:nl()) else ()) ||
+    (if ($examples) then ($block("**Examples**") || out:nl() || out:nl() || $block(local:get-lines($examples)) || out:nl()) else ())
 };
 
 declare function local:table($el as element()) as xs:string {
@@ -181,7 +184,7 @@ let $content :=
   "theme: readthedocs" || out:nl() ||
   "repo_url: https://github.com/dirkk/basex-rtd" || out:nl() ||
   "site_favicon: favicon.ico" || out:nl() ||
-  "markdown_extensions: [admonition]" || out:nl() ||
+  "markdown_extensions: [admonition, extra]" || out:nl() ||
   "pages:" || out:nl() || string-join(
     for $chapter in map:keys($C:NAVIGATION)
     for $title in map:get($C:NAVIGATION, $chapter)
