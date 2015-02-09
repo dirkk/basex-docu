@@ -59,8 +59,11 @@ declare function local:to-url($el as element()) as xs:string {
     if (empty($target) or $target = "")
     then 
       let $page := C:open($C:DOCBOOKS-PATH)/chapter[@*:id = $el/@linkend]/title/string()
+      let $page := if ($page = "Main Page") then "index" else $page
       return $page || ".md"
-    else $target || ".md#" || $el/@linkend/string()
+    else 
+      let $target := if ($target = "Main Page") then "index" else $target
+      return $target || ".md#" || $el/@linkend/string()
 };
 
 declare function local:left-trim($string as xs:string?) as xs:string {
@@ -128,6 +131,8 @@ declare function local:transform($element as item(), $level as xs:integer) as xs
         return " * " || local:left-trim($text($item, $level)) || out:nl()
       , "")
       case "section" return $text($element, $level + 1)
+      case "variablelist"
+        return "** " || local:left-trim($text($element/varlistentry/term, $level)) || "**" || out:nl() || out:nl()
       case "informaltable" return
         if ($element//emphasis = "Signatures" and $element//emphasis = "Summary")
         then local:code-signature($element)
@@ -149,6 +154,15 @@ file:write-binary($C:EXPORT-PATH || $C:MARKDOWN-PATH || "docs/favicon.ico", fetc
 let $output-dir := $C:EXPORT-PATH || $C:MARKDOWN-PATH || "docs/"
 for $chapter in C:open($C:DOCBOOKS-PATH)/chapter
 let $title := $chapter/title/string()
+let $chapter := if ($title = "Getting Started") then $chapter update (
+    let $lists := .//bridgehead[. = "Tutorials and Slides"]/following-sibling::itemizedlist
+    for $item in $lists[2]/listitem
+    return (
+      insert node $item into $lists[1],
+      delete node $item
+    )
+  ) else $chapter
+let $title := if ($title = "Main Page") then "index" else $title
 let $output-path := $output-dir || $title || ".md"
 
 let $content :=
@@ -171,7 +185,8 @@ let $content :=
   "pages:" || out:nl() || string-join(
     for $chapter in map:keys($C:NAVIGATION)
     for $title in map:get($C:NAVIGATION, $chapter)
+    let $site := if ($title = "Main Page") then "index" else $title
     return 
-      '- ["' || $title || '.md", "' || $chapter || '", "' || $title || '"]' || out:nl()
+      '- ["' || $site || '.md", "' || $chapter || '", "' || $title || '"]' || out:nl()
   )
 return file:write($output-config, $content)
